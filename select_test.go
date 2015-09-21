@@ -24,19 +24,19 @@ import (
 var _ = Describe("Select Iterator", func() {
 	Describe("When creating a new select iterator", func() {
 		var (
-			slice    []interface{}
+			source   []interface{}
 			iterator enumerate.Iterable
 		)
 
 		Context("with a contant projection function", func() {
 			BeforeEach(func() {
-				slice = []interface{}{"a", "b", "c"}
+				source = []interface{}{"a", "b", "c"}
 				iterator = enumerate.Select(
-					enumerate.Slice(slice),
+					enumerate.Slice(source),
 					func(x interface{}) interface{} { return "a" })
 			})
 
-			It("should return the same number of elements as the original slice", func() {
+			It("should return the same number of elements as the original source", func() {
 				var count int
 				for _, ok := iterator.Next(); ok; _, ok = iterator.Next() {
 					count += 1

@@ -24,14 +24,14 @@ import (
 var _ = Describe("Where Iterator", func() {
 	Describe("When creating a new where iterator", func() {
 		var (
-			slice    []interface{}
+			source   []interface{}
 			iterator enumerate.Iterable
 		)
 
 		BeforeEach(func() {
-			slice = []interface{}{"a", "b", "a"}
+			source = []interface{}{"a", "b", "a"}
 			iterator = enumerate.Where(
-				enumerate.Slice(slice),
+				enumerate.Slice(source),
 				func(x interface{}) bool { return x == "a" })
 		})
 

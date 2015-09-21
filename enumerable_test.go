@@ -26,13 +26,13 @@ import (
 var _ = Describe("Iterator Enumerable", func() {
 	Describe("When creating a new iterator enumerable", func() {
 		var (
-			slice      []interface{}
+			source     []interface{}
 			enumerable enumerate.Enumerable
 		)
 
 		BeforeEach(func() {
-			slice = []interface{}{"a", "b", "a"}
-			enumerable = enumerate.ItE(enumerate.Slice(slice))
+			source = []interface{}{"a", "b", "a"}
+			enumerable = enumerate.ItE(enumerate.Slice(source))
 		})
 
 		It("should return only items that match the predicate when appending a where", func() {

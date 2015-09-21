@@ -21,36 +21,40 @@ import (
 	"github.com/dare2try/go-enumerate"
 )
 
-var _ = Describe("Slice Iterator", func() {
-	Describe("When creating a new slice iterator", func() {
+var _ = Describe("Map Iterator", func() {
+	Describe("When creating a new map iterator", func() {
 		var (
-			source   []interface{}
-			iterator enumerate.Iterable
+			source   map[interface{}]interface{}
+			iterator enumerate.KeyValueIterable
 		)
 
 		BeforeEach(func() {
-			source = []interface{}{"a"}
-			iterator = enumerate.Slice(source)
+			source = map[interface{}]interface{}{"A": "a"}
+			iterator = enumerate.Map(source)
 		})
 
 		It("should return nil after enumerating all values", func() {
-			var item interface{}
+			var key interface{}
+			var value interface{}
 			var ok bool
 
-			item, ok = iterator.Next()
-			Ω(item).ShouldNot(BeNil())
+			key, value, ok = iterator.Next()
+			Ω(key).ShouldNot(BeNil())
+			Ω(value).ShouldNot(BeNil())
 			Ω(ok).Should(BeTrue())
 
-			item, ok = iterator.Next()
-			Ω(item).Should(BeNil())
+			key, value, ok = iterator.Next()
+			Ω(key).Should(BeNil())
+			Ω(value).Should(BeNil())
 			Ω(ok).Should(BeFalse())
 		})
 
 		It("Should not be effected by changes to the slice after initialization", func() {
-			source[0] = "b"
-			item, ok := iterator.Next()
-			Ω(item).ShouldNot(BeNil())
-			Ω(item).Should(Equal("a"))
+			source["A"] = "b"
+			key, value, ok := iterator.Next()
+			Ω(key).ShouldNot(BeNil())
+			Ω(key).Should(Equal("A"))
+			Ω(value).Should(Equal("a"))
 			Ω(ok).Should(BeTrue())
 		})
 	})

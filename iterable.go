@@ -31,14 +31,16 @@ type Iterable interface {
 // Converts a slice into an iterable object
 // Note: A copy of the slice will be create in
 //       order to ensure that it is immutable
-func Slice(slice []interface{}) Iterable {
-	c := make([]interface{}, len(slice))
-	copy(c, slice)
+func Slice(source []interface{}) Iterable {
+	length := len(source)
+
+	c := make([]interface{}, length)
+	copy(c, source)
 
 	return &sliceIterator{
 		position: 0,
-		length:   len(slice),
-		slice:    c,
+		length:   length,
+		source:   c,
 	}
 }
 
@@ -74,7 +76,7 @@ func Where(iterator Iterable, predicate Predicate) Iterable {
 type sliceIterator struct {
 	position int
 	length   int
-	slice    []interface{}
+	source   []interface{}
 }
 
 // Returns the next item in the slice and a boolean result to
@@ -85,7 +87,7 @@ func (this *sliceIterator) Next() (interface{}, bool) {
 	log.Println(fmt.Sprintf("Position: %d, Length: %d", this.position, this.length))
 	if this.position < this.length {
 		// log.Println(fmt.Sprintf("Position: %i, Length: %i", this.position, this.length))
-		next := this.slice[this.position]
+		next := this.source[this.position]
 		this.position += 1
 		return next, true
 	}
