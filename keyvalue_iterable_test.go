@@ -61,4 +61,62 @@ var _ = Describe("What is a key value iterable", func() {
 		})
 	})
 
+	Describe("KvSelect Iterator", func() {
+		Describe("When creating a new key/value select iterator", func() {
+			var (
+				source   map[interface{}]interface{}
+				iterator enumerate.KeyValueIterable
+			)
+
+			Context("with a contant projection function", func() {
+				BeforeEach(func() {
+					source = map[interface{}]interface{}{"A": "a", "B": "b", "C": "c"}
+					iterator = enumerate.KvSelect(
+						enumerate.Map(source),
+						func(k interface{}, v interface{}) interface{} { return "a" })
+				})
+
+				It("should return the same number of elements as the original source", func() {
+					var count int
+					for _, _, ok := iterator.Next(); ok; _, _, ok = iterator.Next() {
+						count += 1
+					}
+					Ω(count).Should(Equal(3))
+				})
+
+				It("should return the constant value provided in the projection", func() {
+					result := make(map[interface{}]interface{}, 0)
+					for key, value, ok := iterator.Next(); ok; key, value, ok = iterator.Next() {
+						result[key] = value
+					}
+					Ω(result).Should(Equal(map[interface{}]interface{}{"A": "a", "B": "a", "C": "a"}))
+				})
+			})
+		})
+	})
+
+	Describe("KvWhere Iterator", func() {
+		Describe("When creating a new key/value where iterator", func() {
+			var (
+				source   map[interface{}]interface{}
+				iterator enumerate.KeyValueIterable
+			)
+
+			BeforeEach(func() {
+				source = map[interface{}]interface{}{"A": "a", "B": "b", "C": "a"}
+				iterator = enumerate.KvWhere(
+					enumerate.Map(source),
+					func(k interface{}, v interface{}) bool { return v == "a" })
+			})
+
+			It("should return only items that match the predicate", func() {
+				result := make(map[interface{}]interface{}, 0)
+				for key, value, ok := iterator.Next(); ok; key, value, ok = iterator.Next() {
+					result[key] = value
+				}
+				Ω(result).Should(Equal(map[interface{}]interface{}{"A": "a", "C": "a"}))
+			})
+		})
+	})
+
 })
