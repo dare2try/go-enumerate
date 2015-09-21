@@ -52,6 +52,6 @@ func (this *iteratorEnumerable) Where(predicate Predicate) Enumerable {
 	return ItE(Where(this.iterator, predicate))
 }
 
-func (this *iteratorEnumerable) Next() interface{} {
+func (this *iteratorEnumerable) Next() (interface{}, bool) {
 	return this.iterator.Next()
 }

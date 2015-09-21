@@ -38,7 +38,7 @@ var _ = Describe("Select Iterator", func() {
 
 			It("should return the same number of elements as the original slice", func() {
 				var count int
-				for iterator.Next() != nil {
+				for _, ok := iterator.Next(); ok; _, ok = iterator.Next() {
 					count += 1
 				}
 				Ω(count).Should(Equal(3))
@@ -46,7 +46,7 @@ var _ = Describe("Select Iterator", func() {
 
 			It("should return the constant value provided in the projection", func() {
 				result := make([]interface{}, 0)
-				for item := iterator.Next(); item != nil; item = iterator.Next() {
+				for item, ok := iterator.Next(); ok; item, ok = iterator.Next() {
 					result = append(result, item)
 				}
 				Ω(result).Should(Equal([]interface{}{"a", "a", "a"}))

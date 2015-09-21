@@ -37,7 +37,7 @@ var _ = Describe("Where Iterator", func() {
 
 		It("should return only items that match the predicate", func() {
 			result := make([]interface{}, 0)
-			for item := iterator.Next(); item != nil; item = iterator.Next() {
+			for item, ok := iterator.Next(); ok; item, ok = iterator.Next() {
 				result = append(result, item)
 			}
 			Ω(result).Should(Equal([]interface{}{"a", "a"}))

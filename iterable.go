@@ -14,9 +14,14 @@
 
 package enumerate
 
+import (
+	"fmt"
+	"log"
+)
+
 // Defines what it means to be iterable
 type Iterable interface {
-	Next() interface{}
+	Next() (interface{}, bool)
 }
 
 // **********************************************
@@ -72,19 +77,19 @@ type sliceIterator struct {
 	slice    []interface{}
 }
 
-// Returns the next item in teh slice, or nil if there
-// are no more items
-// Note: It is the consumers responsibilty to ensure that the
-// underlying slice does not have nil values, otherwise
-// it's going to be bad times (maybe this should be a
-// multi-valued return?)
-func (this *sliceIterator) Next() interface{} {
+// Returns the next item in the slice and a boolean result to
+// identify if the result returned is the last item in the
+// underlying collection. If there are no more items in the
+// underlying collection, nil and flase is returned (respectively)
+func (this *sliceIterator) Next() (interface{}, bool) {
+	log.Println(fmt.Sprintf("Position: %d, Length: %d", this.position, this.length))
 	if this.position < this.length {
+		// log.Println(fmt.Sprintf("Position: %i, Length: %i", this.position, this.length))
 		next := this.slice[this.position]
 		this.position += 1
-		return next
+		return next, true
 	}
-	return nil
+	return nil, false
 }
 
 // Allows the consumer to apply a projection function to
@@ -96,11 +101,11 @@ type selectIterator struct {
 
 // Applies the projection function to each of the items
 // returned by the underlying iterator
-func (this *selectIterator) Next() interface{} {
-	if item := this.iterator.Next(); item != nil {
-		return this.projection(item)
+func (this *selectIterator) Next() (interface{}, bool) {
+	if item, ok := this.iterator.Next(); ok {
+		return this.projection(item), ok
 	}
-	return nil
+	return nil, false
 }
 
 // Allows the consumer to reduce the number of
@@ -116,11 +121,11 @@ type whereIterator struct {
 // Othrewise the function will continue to iterator over the
 // results until if finds another or has no more items left
 // to iterate
-func (this *whereIterator) Next() interface{} {
-	for item := this.iterator.Next(); item != nil; item = this.iterator.Next() {
+func (this *whereIterator) Next() (interface{}, bool) {
+	for item, ok := this.iterator.Next(); ok; item, ok = this.iterator.Next() {
 		if this.predicate(item) {
-			return item
+			return item, ok
 		}
 	}
-	return nil
+	return nil, false
 }

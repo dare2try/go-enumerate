@@ -18,6 +18,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"log"
+
 	"github.com/dare2try/go-enumerate"
 )
 
@@ -37,7 +39,8 @@ var _ = Describe("Iterator Enumerable", func() {
 			result := enumerable.Where(func(x interface{}) bool { return x == "a" })
 
 			var count int
-			for item := result.Next(); item != nil; item = result.Next() {
+			for item, ok := result.Next(); ok; item, ok = result.Next() {
+				log.Println("HERE!!")
 				Ω(item).ShouldNot(BeNil())
 				Ω(item).Should(Equal("a"))
 				count += 1
@@ -49,7 +52,7 @@ var _ = Describe("Iterator Enumerable", func() {
 			result := enumerable.Select(func(x interface{}) interface{} { return "a" })
 
 			var count int
-			for item := result.Next(); item != nil; item = result.Next() {
+			for item, ok := result.Next(); ok; item, ok = result.Next() {
 				Ω(item).ShouldNot(BeNil())
 				Ω(item).Should(Equal("a"))
 				count += 1

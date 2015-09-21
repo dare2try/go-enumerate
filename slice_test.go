@@ -34,15 +34,24 @@ var _ = Describe("Slice Iterator", func() {
 		})
 
 		It("should return nil after enumerating all values", func() {
-			Ω(iterator.Next()).ShouldNot(BeNil())
-			Ω(iterator.Next()).Should(BeNil())
+			var item interface{}
+			var ok bool
+
+			item, ok = iterator.Next()
+			Ω(item).ShouldNot(BeNil())
+			Ω(ok).Should(BeTrue())
+
+			item, ok = iterator.Next()
+			Ω(item).Should(BeNil())
+			Ω(ok).Should(BeFalse())
 		})
 
 		It("Should not be effected by changes to the slice after initialization", func() {
 			slice[0] = "b"
-			item := iterator.Next()
+			item, ok := iterator.Next()
 			Ω(item).ShouldNot(BeNil())
 			Ω(item).Should(Equal("a"))
+			Ω(ok).Should(BeTrue())
 		})
 	})
 })
