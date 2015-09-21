@@ -14,11 +14,6 @@
 
 package enumerate
 
-import (
-	"fmt"
-	"log"
-)
-
 // Defines what it means to be iterable
 type Iterable interface {
 	Next() (interface{}, bool)
@@ -84,7 +79,6 @@ type sliceIterator struct {
 // underlying collection. If there are no more items in the
 // underlying collection, nil and flase is returned (respectively)
 func (this *sliceIterator) Next() (interface{}, bool) {
-	log.Println(fmt.Sprintf("Position: %d, Length: %d", this.position, this.length))
 	if this.position < this.length {
 		// log.Println(fmt.Sprintf("Position: %i, Length: %i", this.position, this.length))
 		next := this.source[this.position]
