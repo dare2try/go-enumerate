@@ -29,7 +29,7 @@ type Iterable interface {
 func Slice(source []interface{}) Iterable {
 	length := len(source)
 
-	c := make([]interface{}, length)
+	c := make([]interface{}, length, length)
 	copy(c, source)
 
 	return &sliceIterator{

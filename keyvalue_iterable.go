@@ -27,12 +27,17 @@ type KeyValueIterable interface {
 //       order to ensure that it is immutable
 func Map(source map[interface{}]interface{}) KeyValueIterable {
 	length := len(source)
-	keys := make([]interface{}, 0, length)
+	keys := make([]interface{}, length, length)
 	copyOfSource := make(map[interface{}]interface{}, length)
 
+	// Since we need to be able to iterate over the map
+	// (which isn't really easy to do) lets create a slice
+	// of keys which we will use to keep our place
+	i := 0
 	for k, v := range source {
-		keys = append(keys, k)
+		keys[i] = k
 		copyOfSource[k] = v
+		i++
 	}
 
 	// We create the slice iterator directly to avoid an unneccessary
